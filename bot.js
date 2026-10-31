@@ -16,7 +16,7 @@ app.listen(PORT, '0.0.0.0', () => {
 const mineflayer = require('mineflayer');
 
 const botOptions = {
-  host: 'mummichog.aternos.host', 
+  host: 'slimehead.aternos.host', 
   port: 52960,                    
   username: 'AFK_slave',
   version: '1.21',                
