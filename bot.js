@@ -13,7 +13,7 @@ app.listen(PORT, '0.0.0.0', () => {
 const mineflayer = require('mineflayer');
 
 const botOptions = {
-  host: 'nurseryfish.aternos.host', 
+  host: 'giganeega-dcQ4.aternos.me', 
   port: 52960,                    
   username: 'AFK_slave',
   version: '1.21',                
