@@ -1,3 +1,16 @@
+// --- LIGHTWEIGHT WEB SERVER FOR UPTIMEROBOT KEEPALIVE ---
+const express = require('express');
+const app = express();
+const PORT = process.env.PORT || 3000;
+
+app.get('/', (req, res) => {
+  res.send('Bot is awake and active!');
+});
+
+app.listen(PORT, () => {
+  console.log(`Web keepalive server listening on port ${PORT}`);
+});
+
 const mineflayer = require('mineflayer');
 
 const botOptions = {
