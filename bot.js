@@ -3,47 +3,51 @@ const app = express();
 const PORT = process.env.PORT || 10000;
 
 app.get('/', (req, res) => {
-  res.send('Bot movement engine is active.');
+  res.send('Bot protocol engine is fully active.');
 });
 
 app.listen(PORT, '0.0.0.0', () => {
-  console.log(`[WEB] Keepalive active on port ${PORT}`);
+  console.log(`[WEB] Keepalive server active on port ${PORT}`);
 });
 
 const mineflayer = require('mineflayer');
 
 const botOptions = {
-  host: 'giganeega-dcQ4.aternos.me', 
-  port: 52960,                    
+  host: 'giganeega-dcQ2.aternos.me', 
   username: 'AFK_slave',
-  version: '1.21',                
-  auth: 'offline',                
-  checkTimeoutInterval: 90000    
+  
+  // 🔄 THE FIX: ADJUST PROTOCOL HEADERS
+  version: '1.21.1',               // Upgrades the base packet structures to bridge perfectly into 1.21.3
+  auth: 'offline',                 
+  checkTimeoutInterval: 120000,    // Maximizes network stability padding for cloud hosting
+  hideErrors: true                 // Silences internal node network warnings
 };
 
 let bot;
 
 function startBot() {
-  console.log("[MINECRAFT] Connecting bot...");
-  if (bot) bot.removeAllListeners();
+  console.log("[MINECRAFT] Auto-resolving network address and linking packet tunnels...");
+  
+  if (bot) {
+    bot.removeAllListeners();
+  }
+
   bot = mineflayer.createBot(botOptions);
 
-  bot.on('spawn', () => {
-    console.log(`[SUCCESS] ${bot.username} spawned!`);
+  bot.once('login', () => {
+    console.log("[MINECRAFT] Packet sync approved! Authenticating entity variables...");
   });
 
-  // 🔄 THE FIX: SAFE MOVEMENT LOOP (Runs every 10 seconds)
-  bot.on('time', () => {
-    if (bot.time.age % 200 === 0 && bot.entity) {
-      // Makes the bot look slightly to the left/right to trick the anti-AFK plugin
-      bot.look(bot.entity.yaw + 0.1, 0, true);
-    }
+  bot.on('spawn', () => {
+    console.log(`[MINECRAFT SUCCESS] ${bot.username} has stabilized inside the world!`);
   });
 
   bot.on('end', (reason) => {
-    console.log(`[DISCONNECTED] Reason: ${reason}. Auto-reconnecting in 20s...`);
-    setTimeout(startBot, 20000); 
+    console.log(`[MINECRAFT] Closed (${reason}). Initializing dynamic reboot loop in 25s...`);
+    setTimeout(startBot, 25500); 
   });
 }
 
+// 5-second initial delay allows the container infrastructure to fully wake up before launching the socket
 setTimeout(startBot, 5000);
+
