@@ -1,36 +1,32 @@
-javascript
-// --- 1. LIGHTWEIGHT WEB SERVER FOR UPTIMEROBOT KEEPALIVE ---
 const express = require('express');
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 10000;
 
 app.get('/', (req, res) => {
-  res.send('Bot connection engine is running perfectly!');
+  res.send('Bot configuration engine is active.');
 });
 
 app.listen(PORT, '0.0.0.0', () => {
   console.log(`[WEB] Keepalive server listening on port ${PORT}`);
 });
 
-// --- 2. MINECRAFT BOT LAYOUT ---
 const mineflayer = require('mineflayer');
 
 const botOptions = {
-  host: 'slimehead.aternos.host', 
+  host: 'chion.aternos.host', 
   port: 52960,                    
   username: 'AFK_slave',
   version: '1.21',                
   auth: 'offline',                
-  checkTimeoutInterval: 90000,    // Increased tolerance for cloud hosting lag
+  checkTimeoutInterval: 90000,    
   physicsEnabled: false          
 };
 
 let bot;
 
 function startBot() {
-  console.log("[MINECRAFT] Initializing connection to Aternos host...");
+  console.log("[MINECRAFT] Connecting bot to aternos...");
   
-  // Clean up any old existing bot instance memory links before running
   if (bot) {
     bot.removeAllListeners();
   }
@@ -38,15 +34,11 @@ function startBot() {
   bot = mineflayer.createBot(botOptions);
 
   bot.once('login', () => {
-    console.log("[MINECRAFT] Handshake validated by ViaVersion! Syncing entity data...");
+    console.log("[MINECRAFT] Handshake validated! Syncing data...");
   });
 
   bot.on('spawn', () => {
-    console.log(`[MINECRAFT SUCCESS] ${bot.username} has stabilized inside the world!`);
-  });
-
-  bot.on('kicked', (reason) => {
-    console.log(`[MINECRAFT KICKED]: ${reason}`);
+    console.log(`[MINECRAFT SUCCESS] ${bot.username} spawned inside world!`);
   });
 
   bot.on('error', (err) => {
@@ -54,10 +46,9 @@ function startBot() {
   });
 
   bot.on('end', (reason) => {
-    console.log(`[MINECRAFT] Socket closed (${reason}). Instigating clean reboot sequence in 25s...`);
+    console.log(`[MINECRAFT] Closed (${reason}). Reconnecting in 25s...`);
     setTimeout(startBot, 25000); 
   });
 }
 
-// Start the Minecraft connection routine after a brief 5-second cloud boot delay
 setTimeout(startBot, 5000);
