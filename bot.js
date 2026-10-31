@@ -3,11 +3,11 @@ const app = express();
 const PORT = process.env.PORT || 10000;
 
 app.get('/', (req, res) => {
-  res.send('Bot configuration engine is active.');
+  res.send('Bot movement engine is active.');
 });
 
 app.listen(PORT, '0.0.0.0', () => {
-  console.log(`[WEB] Keepalive server listening on port ${PORT}`);
+  console.log(`[WEB] Keepalive active on port ${PORT}`);
 });
 
 const mineflayer = require('mineflayer');
@@ -18,36 +18,31 @@ const botOptions = {
   username: 'AFK_slave',
   version: '1.21',                
   auth: 'offline',                
-  checkTimeoutInterval: 90000,    
-  physicsEnabled: false          
+  checkTimeoutInterval: 90000    
 };
 
 let bot;
 
 function startBot() {
-  console.log("[MINECRAFT] Connecting bot to aternos...");
-  
-  if (bot) {
-    bot.removeAllListeners();
-  }
-
+  console.log("[MINECRAFT] Connecting bot...");
+  if (bot) bot.removeAllListeners();
   bot = mineflayer.createBot(botOptions);
 
-  bot.once('login', () => {
-    console.log("[MINECRAFT] Handshake validated! Syncing data...");
-  });
-
   bot.on('spawn', () => {
-    console.log(`[MINECRAFT SUCCESS] ${bot.username} spawned inside world!`);
+    console.log(`[SUCCESS] ${bot.username} spawned!`);
   });
 
-  bot.on('error', (err) => {
-    console.error(`[MINECRAFT NETWORK ERROR]: ${err.message}`);
+  // 🔄 THE FIX: SAFE MOVEMENT LOOP (Runs every 10 seconds)
+  bot.on('time', () => {
+    if (bot.time.age % 200 === 0 && bot.entity) {
+      // Makes the bot look slightly to the left/right to trick the anti-AFK plugin
+      bot.look(bot.entity.yaw + 0.1, 0, true);
+    }
   });
 
   bot.on('end', (reason) => {
-    console.log(`[MINECRAFT] Closed (${reason}). Reconnecting in 25s...`);
-    setTimeout(startBot, 25000); 
+    console.log(`[DISCONNECTED] Reason: ${reason}. Auto-reconnecting in 20s...`);
+    setTimeout(startBot, 20000); 
   });
 }
 
